@@ -1,6 +1,2 @@
-# datamining
-Nama : Dewi Imani Al Qur'Ani
-
-NIM : 200411100014
-
-Kelas : Penambangan Data C
+# Naive-Bayes-classification-on-Iris-dataset
+Using Naive Bayes classification approach to identify the different species of Iris flowers.
