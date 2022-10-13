@@ -391,6 +391,23 @@ title="Print to PDF"
    Tugas 6 – Decision Tree
   </a>
  </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#uts">
+   UTS
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#metode-naive-bayes">
+     Metode Naive Bayes
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#metode-pohon-keputusan-descision-tree">
+     Metode Pohon Keputusan (Descision Tree)
+    </a>
+   </li>
+  </ul>
+ </li>
 </ul>
 
     </nav>
@@ -463,6 +480,23 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#tugas-6-decision-tree">
    Tugas 6 – Decision Tree
   </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#uts">
+   UTS
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#metode-naive-bayes">
+     Metode Naive Bayes
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#metode-pohon-keputusan-descision-tree">
+     Metode Pohon Keputusan (Descision Tree)
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -4937,6 +4971,734 @@ Name: Species, dtype: int64
   </div>
 </div></div>
 </div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="uts">
+<h1>UTS<a class="headerlink" href="#uts" title="Permalink to this headline">#</a></h1>
+<p>Lakukan analisa terhadap data pada <a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Coimbra">https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Coimbra</a> dengan menggunakan klasifikasi</p>
+<ul class="simple">
+<li><p>metode Naive Bayes Classifier</p></li>
+<li><p>metode pohon keputusan (Desision Tree)</p></li>
+</ul>
+<section id="metode-naive-bayes">
+<h2>Metode Naive Bayes<a class="headerlink" href="#metode-naive-bayes" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#membaca data</span>
+<span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/dewialqurani/datamining/main/BreastCancerCoimbraDataSet.csv&quot;</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+  <div id="df-23b06324-f4fc-4202-b44f-2cdad14757ef">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>BMI</th>
+      <th>Glucose</th>
+      <th>Insulin</th>
+      <th>HOMA</th>
+      <th>Leptin</th>
+      <th>Adiponectin</th>
+      <th>Resistin</th>
+      <th>MCP.1</th>
+      <th>Classification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>48</td>
+      <td>23.500000</td>
+      <td>70</td>
+      <td>2.707</td>
+      <td>0.467409</td>
+      <td>8.8071</td>
+      <td>9.702400</td>
+      <td>7.99585</td>
+      <td>417.114</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>83</td>
+      <td>20.690495</td>
+      <td>92</td>
+      <td>3.115</td>
+      <td>0.706897</td>
+      <td>8.8438</td>
+      <td>5.429285</td>
+      <td>4.06405</td>
+      <td>468.786</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>82</td>
+      <td>23.124670</td>
+      <td>91</td>
+      <td>4.498</td>
+      <td>1.009651</td>
+      <td>17.9393</td>
+      <td>22.432040</td>
+      <td>9.27715</td>
+      <td>554.697</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>68</td>
+      <td>21.367521</td>
+      <td>77</td>
+      <td>3.226</td>
+      <td>0.612725</td>
+      <td>9.8827</td>
+      <td>7.169560</td>
+      <td>12.76600</td>
+      <td>928.220</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>86</td>
+      <td>21.111111</td>
+      <td>92</td>
+      <td>3.549</td>
+      <td>0.805386</td>
+      <td>6.6994</td>
+      <td>4.819240</td>
+      <td>10.57635</td>
+      <td>773.920</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>111</th>
+      <td>45</td>
+      <td>26.850000</td>
+      <td>92</td>
+      <td>3.330</td>
+      <td>0.755688</td>
+      <td>54.6800</td>
+      <td>12.100000</td>
+      <td>10.96000</td>
+      <td>268.230</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>112</th>
+      <td>62</td>
+      <td>26.840000</td>
+      <td>100</td>
+      <td>4.530</td>
+      <td>1.117400</td>
+      <td>12.4500</td>
+      <td>21.420000</td>
+      <td>7.32000</td>
+      <td>330.160</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>113</th>
+      <td>65</td>
+      <td>32.050000</td>
+      <td>97</td>
+      <td>5.730</td>
+      <td>1.370998</td>
+      <td>61.4800</td>
+      <td>22.540000</td>
+      <td>10.33000</td>
+      <td>314.050</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>114</th>
+      <td>72</td>
+      <td>25.590000</td>
+      <td>82</td>
+      <td>2.820</td>
+      <td>0.570392</td>
+      <td>24.9600</td>
+      <td>33.750000</td>
+      <td>3.27000</td>
+      <td>392.460</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>86</td>
+      <td>27.180000</td>
+      <td>138</td>
+      <td>19.910</td>
+      <td>6.777364</td>
+      <td>90.2800</td>
+      <td>14.110000</td>
+      <td>4.35000</td>
+      <td>90.090</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>116 rows × 10 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-23b06324-f4fc-4202-b44f-2cdad14757ef')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-23b06324-f4fc-4202-b44f-2cdad14757ef button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-23b06324-f4fc-4202-b44f-2cdad14757ef');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span><span class="n">train_test_split</span><span class="p">,</span><span class="n">cross_val_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">make_scorer</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span><span class="n">precision_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span> <span class="p">,</span><span class="n">precision_score</span><span class="p">,</span><span class="n">recall_score</span><span class="p">,</span><span class="n">f1_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(116, 4)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Train and Test split</span>
+<span class="n">X_train</span><span class="p">,</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_test</span><span class="o">=</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gaussian</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+<span class="n">gaussian</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">Y_pred</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span> 
+<span class="n">accuracy_nb</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">Y_pred</span><span class="p">)</span><span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">acc_gaussian</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">gaussian</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">Y_pred</span><span class="p">)</span>
+<span class="n">precision</span> <span class="o">=</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">,</span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+<span class="n">recall</span> <span class="o">=</span>  <span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">,</span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">Y_pred</span><span class="p">,</span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Confusion matrix for Naive Bayes</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">cm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;accuracy_Naive Bayes: </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">accuracy</span>)
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;precision_Naive Bayes: </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">precision</span>)
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;recall_Naive Bayes: </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">recall</span>)
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;f1-score_Naive Bayes : </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span><span class="k">f1</span>)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Confusion matrix for Naive Bayes
+ [[10  2]
+ [16  7]]
+accuracy_Naive Bayes: 0.486
+precision_Naive Bayes: 0.486
+recall_Naive Bayes: 0.486
+f1-score_Naive Bayes : 0.486
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="metode-pohon-keputusan-descision-tree">
+<h2>Metode Pohon Keputusan (Descision Tree)<a class="headerlink" href="#metode-pohon-keputusan-descision-tree" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#import modul</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">tree</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#membaca data</span>
+<span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/dewialqurani/datamining/main/BreastCancerCoimbraDataSet.csv&quot;</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+  <div id="df-ea49e452-d423-41b3-a378-e85e08e97074">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>BMI</th>
+      <th>Glucose</th>
+      <th>Insulin</th>
+      <th>HOMA</th>
+      <th>Leptin</th>
+      <th>Adiponectin</th>
+      <th>Resistin</th>
+      <th>MCP.1</th>
+      <th>Classification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>48</td>
+      <td>23.500000</td>
+      <td>70</td>
+      <td>2.707</td>
+      <td>0.467409</td>
+      <td>8.8071</td>
+      <td>9.702400</td>
+      <td>7.99585</td>
+      <td>417.114</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>83</td>
+      <td>20.690495</td>
+      <td>92</td>
+      <td>3.115</td>
+      <td>0.706897</td>
+      <td>8.8438</td>
+      <td>5.429285</td>
+      <td>4.06405</td>
+      <td>468.786</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>82</td>
+      <td>23.124670</td>
+      <td>91</td>
+      <td>4.498</td>
+      <td>1.009651</td>
+      <td>17.9393</td>
+      <td>22.432040</td>
+      <td>9.27715</td>
+      <td>554.697</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>68</td>
+      <td>21.367521</td>
+      <td>77</td>
+      <td>3.226</td>
+      <td>0.612725</td>
+      <td>9.8827</td>
+      <td>7.169560</td>
+      <td>12.76600</td>
+      <td>928.220</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>86</td>
+      <td>21.111111</td>
+      <td>92</td>
+      <td>3.549</td>
+      <td>0.805386</td>
+      <td>6.6994</td>
+      <td>4.819240</td>
+      <td>10.57635</td>
+      <td>773.920</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>111</th>
+      <td>45</td>
+      <td>26.850000</td>
+      <td>92</td>
+      <td>3.330</td>
+      <td>0.755688</td>
+      <td>54.6800</td>
+      <td>12.100000</td>
+      <td>10.96000</td>
+      <td>268.230</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>112</th>
+      <td>62</td>
+      <td>26.840000</td>
+      <td>100</td>
+      <td>4.530</td>
+      <td>1.117400</td>
+      <td>12.4500</td>
+      <td>21.420000</td>
+      <td>7.32000</td>
+      <td>330.160</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>113</th>
+      <td>65</td>
+      <td>32.050000</td>
+      <td>97</td>
+      <td>5.730</td>
+      <td>1.370998</td>
+      <td>61.4800</td>
+      <td>22.540000</td>
+      <td>10.33000</td>
+      <td>314.050</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>114</th>
+      <td>72</td>
+      <td>25.590000</td>
+      <td>82</td>
+      <td>2.820</td>
+      <td>0.570392</td>
+      <td>24.9600</td>
+      <td>33.750000</td>
+      <td>3.27000</td>
+      <td>392.460</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>86</td>
+      <td>27.180000</td>
+      <td>138</td>
+      <td>19.910</td>
+      <td>6.777364</td>
+      <td>90.2800</td>
+      <td>14.110000</td>
+      <td>4.35000</td>
+      <td>90.090</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>116 rows × 10 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-ea49e452-d423-41b3-a378-e85e08e97074')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-ea49e452-d423-41b3-a378-e85e08e97074 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-ea49e452-d423-41b3-a378-e85e08e97074');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Classification&quot;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Classification&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#split data</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 70% training and 30% test</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#membuat model pohon keputusan</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;gini&quot;</span><span class="p">)</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1">#Prediksi data test</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy:&quot;</span><span class="p">,</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Accuracy: 0.7428571428571429
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt the figure, setting a black background</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="c1">#create the tree plot</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">plot_tree</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span>
+                   <span class="n">rounded</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="n">filled</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1">#show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebooks_132_0.png" src="_images/notebooks_132_0.png" />
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
